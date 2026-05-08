@@ -8,7 +8,18 @@ describe('PollOptionsController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PollOptionsController],
-      providers: [PollOptionsService],
+      providers: [
+        {
+          provide: PollOptionsService,
+          useValue: {
+            create: jest.fn(),
+            findAll: jest.fn(),
+            findOne: jest.fn(),
+            update: jest.fn(),
+            remove: jest.fn(),
+          },
+        },
+      ],
     }).compile();
 
     controller = module.get<PollOptionsController>(PollOptionsController);

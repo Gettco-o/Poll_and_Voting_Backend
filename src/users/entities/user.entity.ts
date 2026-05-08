@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Poll } from '../../polls/entities/poll.entity';
 import { Vote } from '../../votes/entities/vote.entity';
+import { NigerianStates } from '../../common/enums/nigerian-states';
 
 export enum UserRole {
   ADMIN = 'ADMIN',
@@ -28,8 +29,8 @@ export class User {
   @Column()
   password!: string;
 
-  @Column()
-  state!: string;
+  @Column({ type: 'enum', enum: NigerianStates })
+  state!: NigerianStates;
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
   role!: UserRole;

@@ -1,26 +1,68 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAuthDto } from './dto/login.dto';
-import { UpdateAuthDto } from './dto/signup.dto';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
+import * as bcrypt from 'bcrypt';
+import { LoginDto } from './dto/login.dto';
+import { SignupDto } from './dto/signup.dto';
+import { User, UserRole } from '../users/entities/user.entity';
+import { UsersService } from '../users/users.service';
+import { ConfigService } from '@nestjs/config';
+import { ForbiddenException } from '@nestjs/common';
+
+type AuthUser = Omit<User, 'password'>;
 
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateAuthDto) {
-    return 'This action adds a new auth';
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
+  ) {}
+
+  async signup(signupDto: SignupDto) {
+    const role = signupDto.role ?? UserRole.USER;
+    if (role === UserRole.ADMIN) {
+      const adminCode = this.configService.get<string>(
+        'ADMIN_REGISTRATION_CODE',
+      );
+      if (!adminCode || signupDto.adminRegistrationCode !== adminCode) {
+        throw new ForbiddenException('Invalid admin registration code');
+      }
+    }
+
+    const savedUser = await this.usersService.create(signupDto);
+
+    return this.format(savedUser);
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  async login(loginDto: LoginDto) {
+    const user = await this.usersService.findByEmail(loginDto.email);
+
+    if (!user) {
+      throw new UnauthorizedException('Invalid email or password');
+    }
+
+    const passwordMatches = await bcrypt.compare(
+      loginDto.password,
+      user.password,
+    );
+
+    if (!passwordMatches) {
+      throw new UnauthorizedException('Invalid email or password');
+    }
+
+    return this.format(this.usersService.toUserResp(user));
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
+  private async format(user: AuthUser) {
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+    };
 
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+    return {
+      accessToken: await this.jwtService.signAsync(payload),
+      user,
+    };
   }
 }

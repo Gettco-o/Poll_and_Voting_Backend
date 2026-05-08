@@ -11,6 +11,7 @@ import {
 import { PollOption } from '../../poll-options/entities/poll-option.entity';
 import { Poll } from '../../polls/entities/poll.entity';
 import { User } from '../../users/entities/user.entity';
+import { NigerianStates } from '../../common/enums/nigerian-states';
 
 @Entity('votes')
 @Unique('UQ_votes_user_poll', ['user', 'poll'])
@@ -45,8 +46,8 @@ export class Vote {
   @RelationId((vote: Vote) => vote.option)
   optionId!: number;
 
-  @Column()
-  state!: string;
+  @Column({ type: 'enum', enum: NigerianStates })
+  state!: NigerianStates;
 
   @CreateDateColumn()
   createdAt!: Date;

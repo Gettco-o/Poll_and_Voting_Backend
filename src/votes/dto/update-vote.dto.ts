@@ -1,4 +1,6 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateVoteDto } from './create-vote.dto';
+import { IsInt } from 'class-validator';
 
-export class UpdateVoteDto extends PartialType(CreateVoteDto) {}
+export class UpdateVoteDto {
+  @IsInt()
+  optionId!: number;
+}
