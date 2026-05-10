@@ -18,7 +18,10 @@ import { UserRole } from '../users/entities/user.entity';
 import { PollOptionsService } from './poll-options.service';
 import { CreatePollOptionDto } from './dto/create-poll-option.dto';
 import { UpdatePollOptionDto } from './dto/update-poll-option.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Poll Options')
+@ApiBearerAuth()
 @Controller('poll-options')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(UserRole.ADMIN)

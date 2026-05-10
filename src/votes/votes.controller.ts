@@ -20,7 +20,11 @@ import type { UserResp } from '../users/users.service';
 import { VotesService } from './votes.service';
 import { CreateVoteDto } from './dto/create-vote.dto';
 import { UpdateVoteDto } from './dto/update-vote.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+
+@ApiTags('Votes')
+@ApiBearerAuth()
 @Controller('votes')
 export class VotesController {
   constructor(private readonly votesService: VotesService) {}

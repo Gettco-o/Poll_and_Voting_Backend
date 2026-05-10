@@ -22,6 +22,10 @@ import type { UserResp } from '../users/users.service';
 import { PollsService } from './polls.service';
 import { CreatePollDto } from './dto/create-poll.dto';
 import { UpdatePollDto } from './dto/update-poll.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+
+@ApiTags('Polls')
+@ApiBearerAuth()
 @Controller('polls')
 export class PollsController {
   constructor(private readonly pollsService: PollsService) { }
