@@ -52,7 +52,7 @@ export class PollsService {
   findActive(): Promise<Poll[]> {
     return this.pollsRepository.find({
       where: { status: PollStatus.ACTIVE },
-      relations: { options: true },
+      relations: { options: true, createdBy: true },
       order: { createdAt: 'DESC' },
     });
   }
