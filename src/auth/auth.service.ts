@@ -19,8 +19,8 @@ export class AuthService {
   ) {}
 
   async signup(signupDto: SignupDto) {
-    const role = signupDto.role ?? UserRole.USER;
-    if (role === UserRole.ADMIN) {
+    signupDto.role = signupDto.adminRegistrationCode ? UserRole.ADMIN : UserRole.USER;
+    if (signupDto.role === UserRole.ADMIN) {
       const adminCode = this.configService.get<string>(
         'ADMIN_REGISTRATION_CODE',
       );
