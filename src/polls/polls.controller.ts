@@ -22,7 +22,7 @@ import type { UserResp } from '../users/users.service';
 import { PollsService } from './polls.service';
 import { CreatePollDto } from './dto/create-poll.dto';
 import { UpdatePollDto } from './dto/update-poll.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Polls')
 @ApiBearerAuth()
@@ -57,6 +57,12 @@ export class PollsController {
   }
 
   @Get(':id/results')
+  @ApiQuery({
+    name: 'state',
+    enum: NigerianStates,
+    required: false,
+    description: 'Optional voter state filter. Omit to return results for all states.',
+  })
   @UseGuards(JwtAuthGuard)
   getResults(
     @Param('id', ParseIntPipe) id: number,
