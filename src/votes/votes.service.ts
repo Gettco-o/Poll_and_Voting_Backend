@@ -63,9 +63,9 @@ export class VotesService {
     }
 
     const vote = this.votesRepository.create({
-      user: { id: user.id },
-      poll: { id: poll.id },
-      option: { id: option.id },
+      user: user,
+      poll: poll,
+      option: option,
       state: user.state,
     });
 
@@ -74,7 +74,7 @@ export class VotesService {
 
   findAll(): Promise<Vote[]> {
     return this.votesRepository.find({
-      relations: { user: true, poll: true, option: true },
+      relations: { poll: true, option: true },
       order: { createdAt: 'DESC' },
     });
   }
@@ -82,7 +82,7 @@ export class VotesService {
   async findOne(id: number): Promise<Vote> {
     const vote = await this.votesRepository.findOne({
       where: { id },
-      relations: { user: true, poll: true, option: true },
+      relations: { poll: true, option: true },
     });
 
     if (!vote) {
@@ -99,7 +99,7 @@ export class VotesService {
   ): Promise<Vote> {
     const vote = await this.votesRepository.findOne({
       where: { id },
-      relations: { poll: true, user: true, option: true },
+      relations: { poll: true, user:true, option: true },
     });
 
     if (!vote) {
