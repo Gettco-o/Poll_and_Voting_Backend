@@ -9,11 +9,7 @@ export const createDataSourceOptions = (
   configService: ConfigService,
 ): DataSourceOptions => ({
   type: 'postgres',
-  host: configService.getOrThrow<string>('DB_HOST'),
-  port: Number(configService.getOrThrow<string>('DB_PORT')),
-  username: configService.getOrThrow<string>('DB_USERNAME'),
-  password: configService.getOrThrow<string>('DB_PASSWORD'),
-  database: configService.getOrThrow<string>('DB_NAME'),
+  url: configService.get<string>('DB_URI'),
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],
   migrations: [__dirname + '/migrations/*{.ts,.js}'],
   synchronize: false,
